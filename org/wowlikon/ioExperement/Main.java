@@ -28,7 +28,7 @@ public class Main {
             // Get the all field objects of User class
             Field[] fields = c.getClass().getFields();
             for (Field field : fields) {
-                Object value = null;
+                Object value;
                 try {value = field.get(c);}
                 catch (IllegalAccessException e) {continue;}
                 System.out.println("Value of Field " + field.getName() + " is " + value);
