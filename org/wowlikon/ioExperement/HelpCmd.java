@@ -18,7 +18,7 @@ public class HelpCmd implements Command{
         } else {
             for (Command c : cmds) {
                 if (c.cmd.equals(args[1])) {
-                    System.out.println(c.cmdHelp); //full info
+                    System.out.println(c.helpText);
                 }
             }
         }
