@@ -3,6 +3,7 @@ package org.wowlikon.ioExperement;
 import jline.ConsoleReader;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -20,6 +21,24 @@ public class Main {
 
         //Find commands
         List<Command> commands = getCommands();
+
+        for (Command c: commands) {
+
+            System.out.println("\n"+c);
+            // Get the all field objects of User class
+            Field[] fields = c.getClass().getFields();
+            for (int i = 0; i < fields.length; i++) {
+                // get value of the fields
+                Object value = null;
+                try { value = fields[i].get(c);}
+                catch (IllegalAccessException e) {continue;}
+                System.out.println("Value of Field "+fields[i].getName()+" is "+value);
+            }
+
+//            if (c.cmd.equals("help")) {
+//                c.execute("help", new String[] {"help"}, dbg, run, commands);
+//            }
+        }
 
         //Main input loop
         while (((line = reader.readLine(">")) != null) & run.value) {
