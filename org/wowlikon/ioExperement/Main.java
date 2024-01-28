@@ -1,68 +1,89 @@
 package org.wowlikon.ioExperement;
 
 import jline.ConsoleReader;
+
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public class Main {
+    public static void main(String[] args) throws IOException {
 
-    static String removePrefix(String src, char prefix) {
-        if ((src.charAt(0) == prefix) & !(src.charAt(1) == prefix)) {
+        String line, err;
+        boolObj run = new boolObj(true);
+        boolObj dbg = new boolObj(false);
+        ConsoleReader reader = new ConsoleReader();
+
+        //Find commands
+        List<Command> commands = getCommands();
+
+        //Main input loop
+        while (((line = reader.readLine(">")) != null) & run.value) {
+            if (line.isEmpty()){
+                System.out.println("Empty command!");
+                continue;
+            }
+
+            String[] arguments = removePrefix(line).split(" ");
+
+            //Get command and args
+            String cmd = arguments[0];
+            arguments = Arrays.copyOfRange(arguments, 1, arguments.length);
+
+            //Print command and arguments if debug mode
+            if (dbg.value) System.out.println(cmd+' '+Arrays.toString(arguments));
+
+            //Finding commands
+            finding: {
+                for (Command c: commands) {
+                    if (!c.cmd.equals(cmd)) continue;
+                    err = c.validate(cmd, arguments);
+                    if (!Objects.isNull(err)){
+                        System.out.println(err);
+                    } else {
+                        c.execute(cmd, arguments, dbg, run, commands);
+                    }
+                    break finding;
+                }
+                System.out.println("Command \""+cmd+"\" not found!");
+            }
+        }
+    }
+
+    static String removePrefix(String src) {
+        if ((src.charAt(0) == '/') & !(src.charAt(1) == '/')) {
             return src.substring(1);
         }
         return src;
     }
 
-    public static void main(String[] args) throws IOException {
-
-        String line;
-        boolean dbg = false;
-        ConsoleReader reader = new ConsoleReader();
-        running: while ((line = reader.readLine(">")) != null) {
-            if (!line.isEmpty()){
-                String[] arguments = removePrefix(line, '/').split(" ");
-
-                String cmd = arguments[0];
-                arguments = Arrays.copyOfRange(arguments, 1, arguments.length);
-
-                if (dbg) System.out.println(cmd+' '+Arrays.toString(arguments));
-
-                switch (cmd.toLowerCase()) {
-                    case "exit":
-                        System.out.println("Exit!");
-                        break running;
-                    case "print":
-                        System.out.println(String.join(" ", arguments));
-                        break;
-                    case "dbg":
-                        if (arguments.length != 0) {
-                            if (arguments[0].equals("on")) {
-                                dbg = true;
-                                System.out.println("Debug enabled");
-                            } else if (arguments[0].equals("off")) {
-                                dbg = false;
-                                System.out.println("Debug disabled");
-                            } else {
-                                System.out.println("Error. Select on/off");
-                            }
-                        } else {
-                            System.out.println("Error. Select on/off");
-                        }
-                        break;
-                    case "help":
-                        System.out.println("/print [...] - write arguments to console");
-                        System.out.println("/dbg {on/off} - enable/disable debug mode");
-                        System.out.println("/help [cmd] - write information about command");
-                        System.out.println("/exit - close this application");
-                        break;
-                    default:
-                        System.out.println("Command \""+cmd+"\" not found");
-                        break;
-                }
-
-            }else{
-                System.out.println("Empty command!");
+    public static List<Command> getCommands(){
+        ClassLoader classLoader = Main.class.getClassLoader();
+        List<Class<?>> classes = ReflectionUtils.getAllClasses(classLoader);
+        List<Class<? extends Command>> commandClasses = new ArrayList<>();
+        for (Class<?> clazz : classes) {
+            if (Command.class.isAssignableFrom(clazz) && !clazz.equals(Command.class)) {
+                commandClasses.add((Class<? extends Command>) clazz);
             }
         }
+
+        List<Command> commandInstances = new ArrayList<>();
+        for (Class<? extends Command> commandClass : commandClasses) {
+            try {
+                Constructor<? extends Command> constructor = commandClass.getDeclaredConstructor();
+                constructor.setAccessible(true);
+                Command commandInstance = constructor.newInstance();
+                commandInstances.add(commandInstance);
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                     InvocationTargetException e) {
+                System.out.println("Error creating instance of " + commandClass);
+            }
+        }
+
+        return commandInstances;
     }
 }
