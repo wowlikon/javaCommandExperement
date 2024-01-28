@@ -27,12 +27,11 @@ public class Main {
             System.out.println("\n"+c);
             // Get the all field objects of User class
             Field[] fields = c.getClass().getFields();
-            for (int i = 0; i < fields.length; i++) {
-                // get value of the fields
+            for (Field field : fields) {
                 Object value = null;
-                try { value = fields[i].get(c);}
+                try {value = field.get(c);}
                 catch (IllegalAccessException e) {continue;}
-                System.out.println("Value of Field "+fields[i].getName()+" is "+value);
+                System.out.println("Value of Field " + field.getName() + " is " + value);
             }
 
 //            if (c.cmd.equals("help")) {
