@@ -22,23 +22,6 @@ public class Main {
         //Find commands
         List<Command> commands = getCommands();
 
-        for (Command c: commands) {
-
-            System.out.println("\n"+c);
-            // Get the all field objects of User class
-            Field[] fields = c.getClass().getFields();
-            for (Field field : fields) {
-                Object value = null;
-                try {value = field.get(c);}
-                catch (IllegalAccessException e) {continue;}
-                System.out.println("Value of Field " + field.getName() + " is " + value);
-            }
-
-//            if (c.cmd.equals("help")) {
-//                c.execute("help", new String[] {"help"}, dbg, run, commands);
-//            }
-        }
-
         //Main input loop
         while (((line = reader.readLine(">")) != null) & run.value) {
             if (line.isEmpty()){
@@ -58,7 +41,7 @@ public class Main {
             //Finding commands
             finding: {
                 for (Command c: commands) {
-                    if (!c.cmd.equals(cmd)) continue;
+                    if (!c.getCmd().equals(cmd)) continue;
                     err = c.validate(cmd, arguments);
                     if (!Objects.isNull(err)){
                         System.out.println(err);

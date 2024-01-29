@@ -3,9 +3,9 @@ package org.wowlikon.ioExperement;
 import java.util.List;
 
 public class DebugCmd implements Command{
-    public final String cmd = "dbg";
-    public final String cmdHelp = "/dbg {on/off} - enable/disable debug mode";
-    public final String helpText = "Enabling od disabling debug mode.\n/dbg {status}\nRequired arguments:\n\t{status} - on/off";
+    public String getCmd(){return "dbg";}
+    public String getCmdHelp(){return "/dbg {on/off} - enable/disable debug mode";}
+    public String getHelpText(){return "Enabling od disabling debug mode.\n/dbg {status}\nRequired arguments:\n\t{status} - on/off";}
 
     public String validate(String cmd, String[] args){
         if (args.length != 1) return "required argument: status {on/off}";
