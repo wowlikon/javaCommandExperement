@@ -2,14 +2,13 @@ package org.wowlikon.ioExperement;
 
 import jline.ConsoleReader;
 
+import java.util.List;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.ArrayList;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -55,6 +54,7 @@ public class Main {
         }
     }
 
+    //Remove single slash prefix
     static String removePrefix(String src) {
         if ((src.charAt(0) == '/') & !(src.charAt(1) == '/')) {
             return src.substring(1);
@@ -62,10 +62,12 @@ public class Main {
         return src;
     }
 
+    //Finding classes implementing Command interface
     public static List<Command> getCommands(){
         ClassLoader classLoader = Main.class.getClassLoader();
         List<Class<?>> classes = ReflectionUtils.getAllClasses(classLoader);
         List<Class<? extends Command>> commandClasses = new ArrayList<>();
+
         for (Class<?> clazz : classes) {
             if (Command.class.isAssignableFrom(clazz) && !clazz.equals(Command.class)) {
                 commandClasses.add((Class<? extends Command>) clazz);
@@ -77,14 +79,13 @@ public class Main {
             try {
                 Constructor<? extends Command> constructor = commandClass.getDeclaredConstructor();
                 constructor.setAccessible(true);
+
                 Command commandInstance = constructor.newInstance();
                 commandInstances.add(commandInstance);
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                     InvocationTargetException e) {
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 System.out.println("Error creating instance of " + commandClass);
             }
         }
-
         return commandInstances;
     }
 }
