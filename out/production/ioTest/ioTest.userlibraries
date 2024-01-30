@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="jansi-1.18">
+    <archive path="D:/java/jansi-1.18.jar" />
+  </library>
+  <library name="jline-1">
+    <archive path="D:/java/jline-1.0/jline-1.0.jar" />
+  </library>
+  <library name="Game">
+    <archive path="D:/java/Game" />
+  </library>
+</eclipse-userlibraries>
+

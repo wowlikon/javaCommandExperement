@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="io:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/io_jar</output-path>
+    <root id="archive" name="ioTest.jar">
+      <element id="module-output" name="ioTest" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../jline-1.0/jline-1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../jansi-1.18.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

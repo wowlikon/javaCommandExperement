@@ -20,6 +20,11 @@ public class Main {
 
         //Find commands
         List<Command> commands = getCommands();
+        for (Command c: commands){
+            if (c.getCmd().equals("help")){
+                c.execute("help", new String[] {}, dbg, run, commands);
+            }
+        }
 
         //Main input loop
         while (((line = reader.readLine(">")) != null) & run.value) {
@@ -31,7 +36,7 @@ public class Main {
             String[] arguments = removePrefix(line).split(" ");
 
             //Get command and args
-            String cmd = arguments[0];
+            String cmd = arguments[0].toLowerCase();
             arguments = Arrays.copyOfRange(arguments, 1, arguments.length);
 
             //Print command and arguments if debug mode
@@ -40,7 +45,10 @@ public class Main {
             //Finding commands
             finding: {
                 for (Command c: commands) {
-                    if (!c.getCmd().equals(cmd)) continue;
+                    if (!c.getCmd().equals(cmd)) {
+                        System.out.println(c.getCmd()+" skipped for "+cmd);
+                        continue;
+                    }
                     err = c.validate(cmd, arguments);
                     if (!Objects.isNull(err)){
                         System.out.println(err);

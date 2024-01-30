@@ -1,0 +1,10 @@
+# Default ignored files
+/out/
+/.idea/
+/shelf/
+/.project/
+/.classpath
+/ioTest.eml
+/ioTest.iml
+/workspace.xml
+/ioTest.userlibraries
